@@ -23,15 +23,13 @@ import numpy as np
 
 import sys
 
+from tensorflow_serving.apis import predict_pb2
+from tensorflow_serving.apis import prediction_service_pb2
 
 import logging
 import grpc
 
-# from keras.applications.xception import preprocess_input
 from grpc import RpcError
-from lib.predict_client.predict_pb2 import PredictRequest
-from lib.predict_client.prediction_service_pb2 import PredictionServiceStub
-from lib.predict_client.abstract_client import AbstractPredictClient
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from gevent.pywsgi import WSGIServer
@@ -46,17 +44,20 @@ logging.info('flask app initialized')
 def create_gprc_client(host):
     """Simple wrapper."""
     channel = grpc.insecure_channel(host)
-    stub = PredictionServiceStub(channel)
-    request = PredictRequest()
+    stub = prediction_service_pb2.PredictionServiceStub(channel)
+    request = predict_pb2.PredictRequest()
     return stub, request
 
 
-class PredictClientClassification(AbstractPredictClient):
+class PredictClientClassification():
     """Prediction Client."""
 
     def __init__(self, host, model_name, model_version=0):
         """I."""
-        super().__init__(host, model_name, model_version)
+        # super().__init__(host, model_name, model_version)
+        self.host = host
+        self.model_name = model_name
+        self.model_version = model_version
 
     def predict():
         """Needed for abstract method."""
@@ -73,7 +74,7 @@ class PredictClientClassification(AbstractPredictClient):
 
         features_tensor_proto = tf.contrib.util.make_tensor_proto(
             request_data, dtype=tf.float32, shape=request_data.shape)
-        request.inputs['conv2d_1_input'].CopyFrom(features_tensor_proto)
+        request.inputs['input_0'].CopyFrom(features_tensor_proto)
 
         try:
             result = stub.Predict(request, timeout=request_timeout)
