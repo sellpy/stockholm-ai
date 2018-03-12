@@ -14,3 +14,4 @@ grpcio>=0.1
 flask>=0.1
 flask-cors>=2.1.2
 gevent>=1.0.0
+tensorflow-serving-api-python3>=0.0.1
