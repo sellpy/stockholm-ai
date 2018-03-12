@@ -1,0 +1,29 @@
+version: '2'
+
+services:
+
+  flask_app:
+    container_name: flask
+    image: test_serve
+    links:
+     - serve_tensorflow:serve_tensorflow
+    environment:
+      PORT: 8080
+    expose:
+      - 8080
+    ports:
+      - '8080:8080'
+    command: python3 server.py
+    volumes:
+      - '.:/app'
+      - '/usr/bin/ec2metadata:/usr/bin/ec2metadata'
+      - '/run/systemd:/run/systemd'
+
+  serve_tensorflow:
+    container_name: serve_tensorflow
+    image: test_serve
+    ports:
+      - '9000:9000'
+    command: tensorflow_model_server --port=9000 --model_config_file=server.conf
+    volumes:
+      - '.:/app'
