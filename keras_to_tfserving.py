@@ -47,9 +47,8 @@ builder = saved_model_builder.SavedModelBuilder(export_path)
 input_dict = {}
 for idx, mod_input in enumerate(new_model.inputs):
     input_dict[
-        mod_input.name.split("_1:0")[0]
+        "input_" + str(idx)
     ] = mod_input
-    print(mod_input.name.split("_1:0")[0])
 
 # Name outputs
 output_dict = {}
