@@ -40,6 +40,8 @@ CORS(app)
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logging.info('flask app initialized')
 
+master_path = ('/' + os.environ['SERVICE_VERSION'] + '/' +
+               os.environ['SERVICE_NAME'])
 
 def create_gprc_client(host):
     """Simple wrapper."""
@@ -83,10 +85,10 @@ class PredictClientClassification():
             print("hej", e)
 
 
-@app.route('/')
+@app.route(master_path + '/')
 def ok():
     """Standard Return."""
-    return ('ok:')
+    return ('Its alive')
 
 
 @app.route('/health_check')
@@ -95,7 +97,7 @@ def health_check():
     return 'healthy'
 
 
-@app.route('/predict/image_position', methods=['POST'])
+@app.route(master_path + '/predict/image_position', methods=['POST'])
 def predict_image_position():
     """Post req."""
     prediction_request = request.get_json()
@@ -110,7 +112,7 @@ def predict_image_position():
     img = np.expand_dims(img, 3)
     print(img.shape)
     mnist_client = PredictClientClassification(
-        "serve_tensorflow:9000", "mnist_example_model")
+        "serve_tensorflow:9001", "mnist_example_model")
 
     output = mnist_client.predict_mnist(img)
     output_class = dict(zip(list(range(0, 10)), list(output)))

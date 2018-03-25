@@ -14,5 +14,11 @@ RUN sh -e /tmp/install.sh
 COPY requirements.txt /tmp/
 RUN pip3 install -r /tmp/requirements.txt
 
+
+# Seems TFserving turned ugly for ubuntu16.04
+# https://github.com/tensorflow/serving/issues/819
+RUN add-apt-repository ppa:ubuntu-toolchain-r/test -y
+RUN apt-get update -y && apt-get upgrade -y && apt-get dist-upgrade -y
+
 WORKDIR /app
 ADD . /app
