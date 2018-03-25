@@ -88,7 +88,7 @@ class PredictClientClassification():
 @app.route(master_path + '/')
 def ok():
     """Standard Return."""
-    return ('Its alive')
+    return ('Its alive, Hello Stockholm-ai')
 
 
 @app.route('/health_check')
@@ -97,7 +97,7 @@ def health_check():
     return 'healthy'
 
 
-@app.route(master_path + '/predict/image_position', methods=['POST'])
+@app.route(master_path + '/predict/mnist_number', methods=['POST'])
 def predict_image_position():
     """Post req."""
     prediction_request = request.get_json()

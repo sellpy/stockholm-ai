@@ -1,2 +1,4 @@
 /models*
 *.m
+.ipynb_checkpoints*
+__pycache__*
