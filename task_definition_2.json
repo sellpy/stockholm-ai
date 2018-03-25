@@ -1,0 +1,72 @@
+{
+    "containerDefinitions": [
+        {
+            "command": [
+                "python3",
+                "server.py"
+            ],
+            "environment": [
+                {
+                    "name": "PORT",
+                    "value": "8080"
+                },
+                {
+                    "name": "MNIST_SECRET_KEY",
+                    "value": "stockholm-ai"
+                },
+                {
+                    "name": "SERVICE_VERSION",
+                    "value": "v1"
+                },
+                {
+                    "name": "SERVICE_NAME",
+                    "value": "stockholm-ai"
+                }
+            ],
+            "essential": true,
+            "workingDirectory": "/app",
+            "image": "966836717103.dkr.ecr.eu-west-1.amazonaws.com/stockholm-ai:dev",
+            "links": [
+                "serve_tensorflow_sthlm_ai:serve_tensorflow"
+            ],
+            "memoryReservation": 300,
+            "name": "stockholm-ai",
+            "logConfiguration": {
+                "logDriver": "syslog",
+                "options": {"syslog-address": "tcp+tls://logs5.papertrailapp.com:26132",
+                        "tag": "stockholm-ai-dev"
+                }
+            },
+            "portMappings": [
+                {
+                    "containerPort": 8080,
+                    "hostPort": 1912,
+                    "protocol": "tcp"
+                }
+            ]
+        },
+        {
+            "command": [
+                "sh", "run_tfserver.sh"
+            ],
+            "essential": true,
+            "workingDirectory": "/app",
+            "image": "966836717103.dkr.ecr.eu-west-1.amazonaws.com/stockholm-ai:dev",
+            "memoryReservation": 800,
+            "logConfiguration": {
+                "logDriver": "syslog",
+                "options": {"syslog-address": "tcp+tls://logs5.papertrailapp.com:26132",
+                        "tag": "stockholm-ai-dev"
+                }
+            },
+            "name": "serve_tensorflow_sthlm_ai",
+            "portMappings": [
+                {
+                    "containerPort": 9001,
+                    "hostPort": 9001
+                }
+            ]
+        }
+    ],
+    "family": "stockholm-ai"
+}
