@@ -35,9 +35,7 @@ def create_repository(repositoryName="stockholm-ai"):
             repositoryName=repositoryName,
             lifecyclePolicyText=lifecycle_policy)
     except:
-        repo = ecr_client.describe_repositories(repositoryNames=["stockholm-ai"])
-
-
+        repo = ecr_client.describe_repositories(repositoryNames=[repositoryName])
 
     return repo
 
