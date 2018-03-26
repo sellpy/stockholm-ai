@@ -38,7 +38,7 @@ import logging
 import grpc
 
 from grpc import RpcError
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Response
 from flask_cors import CORS
 from gevent.pywsgi import WSGIServer
 
@@ -96,7 +96,7 @@ class PredictClientClassification():
 @app.route(master_path + '/')
 def ok():
     """Standard Return."""
-    return ('Its alive, Hello Stockholm-ai')
+    return ('It\'s alive, Hello Stockholm-ai')
 
 
 @app.route('/health_check')
@@ -108,7 +108,18 @@ def health_check():
 @app.route(master_path + '/predict/mnist_number', methods=['POST'])
 def predict_image_position():
     """Post req."""
+    auth_header = request.headers.get('X-StockholmAI-Key', '')
+    auth_key = os.environ['PREDICTOR_SECRET_KEY']
+
+    if (auth_header != auth_key):
+        # logging.warning(('Someone tried to access service without key'))
+        return Response(
+            '''authorized access only. make sure you set the
+               X-StockholmAI-Key header correctly.''',
+            401)
+
     prediction_request = request.get_json()
+
     url = prediction_request["url"]
 
     r = requests.get(url)

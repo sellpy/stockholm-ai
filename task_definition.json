@@ -11,7 +11,7 @@
                     "value": "8080"
                 },
                 {
-                    "name": "MNIST_SECRET_KEY",
+                    "name": "PREDICTOR_SECRET_KEY",
                     "value": "stockholm-ai"
                 },
                 {
