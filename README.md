@@ -3,7 +3,7 @@
 ## Introduction
 The python notebook Sample Code contains a running example of setting up a working example of serving an MNIST model with keras, tensorflowserving, and flask on AWS ECS.
 
-Code should:
+### Code should:
 
     - Train keras model with MNIST.
     - Convert model to TF format (slightly flakey on Jupyter Notebook, might need to restart to reset tf session.)
@@ -13,7 +13,8 @@ Code should:
     - Deregister old task definitions
     - Rebuild image, update service with new task definition and redeploy code. (Optional)
 
-Heads Up:
+### Heads Up:
+
     - Using a mix of boto3 and AWS CLI. Not really ideal but did not have time to rewrite to boto3.
 
 ## Requirements.
