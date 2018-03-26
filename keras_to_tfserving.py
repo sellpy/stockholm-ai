@@ -2,6 +2,7 @@
 import os
 import tensorflow as tf
 import keras.backend as K
+import sys
 
 from keras.models import load_model, Model, Sequential
 from tensorflow.python.saved_model import builder as saved_model_builder
@@ -9,14 +10,17 @@ from tensorflow.python.saved_model import tag_constants
 from tensorflow.python.saved_model.signature_def_utils_impl import (
     predict_signature_def)
 
+
 def convert_keras_to_tf_model(model_name,
                               model_path="models/mnist_example",
                               sequential=True):
-
+    """Convert keras model to tensorflow model."""
     # Needed to run multiple times in juptyter notebook.
     # TODO: figure out what is needed more.
+    # Current solution: Start a separate process.
     sess = tf.Session()
     K.set_session(sess)
+
     # Because needed.
     K.set_learning_phase(0)
 
@@ -29,7 +33,7 @@ def convert_keras_to_tf_model(model_name,
     config = loaded_model.get_config()
     weights = loaded_model.get_weights()
     if sequential:
-        print("""Loading Sequential model, 
+        print("""Loading Sequential model,
                  specify sequential=False to load functional model""")
         new_model = Sequential.from_config(config)
         new_model.set_weights(weights)
@@ -77,3 +81,7 @@ def convert_keras_to_tf_model(model_name,
                                              signature_def_map={'predict':
                                                                 signature})
         builder.save()
+
+if __name__ == "__main__":
+    print(sys.argv[1:])
+    convert_keras_to_tf_model(*sys.argv[1:])
