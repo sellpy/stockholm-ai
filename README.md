@@ -6,7 +6,7 @@ The python notebook Sample Code contains a running example of setting up a worki
 ### Code should:
 
     - Train keras model with MNIST.
-    - Convert model to TF format (slightly flakey on Jupyter Notebook, might need to restart to reset tf session.)
+    - Convert model to TF format
     - Build docker image and push it to AWS ECR (Elastic Container Registry)
     - Register a new task definition (task_definition.json)
     - Create a new service on ECS (Elastic Container Service) running.
