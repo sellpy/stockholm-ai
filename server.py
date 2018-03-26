@@ -23,6 +23,14 @@ import numpy as np
 
 import sys
 
+"""Flask container requires gPRC and tensorflow-API
+   to communicate with tensorflow-serving.
+   Tensorflow-serving-api is officially only available for python2,
+   although it seems to be a flagging issue in the
+   package manager more than anything. Currently using:
+   https://github.com/illagrenan/tensorflow-serving-api-python3
+   (see. https://github.com/tensorflow/serving/issues/700)"""
+
 from tensorflow_serving.apis import predict_pb2
 from tensorflow_serving.apis import prediction_service_pb2
 

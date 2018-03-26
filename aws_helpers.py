@@ -1,20 +1,16 @@
+"""Helpers for making aws calls a bit easier."""
 import boto3
-import sys
-
-version = 1
-service_path = 'services.dev.sellpy.net'
-service = "tester_dev"
-cluster = "microservices"
-load_balancer_name = "sellpy-services"
 
 # Assumes a load balancer and listener is in place.
 
-def create_repository(repositoryName="stockholm-ai"):
+
+def create_repository(repository_name="stockholm-ai"):
+    """Create new ecr repository with lifecycle policy."""
     ecr_client = boto3.client("ecr")
 
     # This is not very elegant.
     try:
-        repo = ecr_client.create_repository(repositoryName=repositoryName)
+        repo = ecr_client.create_repository(repositoryName=repository_name)
         lifecycle_policy = """{
           "rules": [
             {
@@ -32,10 +28,11 @@ def create_repository(repositoryName="stockholm-ai"):
           ]
         }"""
         ecr_client.put_lifecycle_policy(
-            repositoryName=repositoryName,
+            repositoryName=repository_name,
             lifecyclePolicyText=lifecycle_policy)
     except:
-        repo = ecr_client.describe_repositories(repositoryNames=[repositoryName])
+        repo = ecr_client.describe_repositories(
+            repositoryNames=[repository_name])
 
     return repo
 
@@ -44,7 +41,7 @@ def setup_elb(service,
               version,
               load_balancer_name="sellpy-services",
               service_path='services.dev.sellpy.net'):
-
+    """Setup target in ELB loadbalancer."""
     client = boto3.client('elbv2')
 
     # Create a target group for the new services
@@ -100,7 +97,7 @@ def setup_elb(service,
     for rule in elb_rules["Rules"]:
         conditions = rule["Conditions"]
         if ((new_rule_condition[0] in conditions) &
-            (new_rule_condition[1] in conditions)):
+           (new_rule_condition[1] in conditions)):
             return target_group_arn
         if rule["Priority"] != "default":
             prio = max(prio, int(rule["Priority"]))
@@ -122,6 +119,7 @@ def setup_elb(service,
 
 # ---- ECS ----
 def deregister_old_taskdefinitions(service):
+    """Remove old task definitions."""
     ecs_client = boto3.client('ecs')
 
     task_defs = ecs_client.list_task_definitions(
@@ -137,15 +135,18 @@ def deregister_old_taskdefinitions(service):
 
 
 def create_ecs_service(cluster,
-                   service,
-                   task_definition_family,
-                   target_group_arn,
-                   service_count=1):
+                       service,
+                       task_definition_family,
+                       target_group_arn,
+                       service_count=1,
+                       launch_type='EC2'):
+    """Create ecs service for serving whatever you need."""
     ecs_client = boto3.client('ecs')
 
     if service in ecs_client.list_task_definition_families()["families"]:
         task_def = ecs_client.list_task_definitions(
-            familyPrefix=task_definition_family, sort='DESC')["taskDefinitionArns"][0]
+            familyPrefix=task_definition_family,
+            sort='DESC')["taskDefinitionArns"][0]
 
     response = ecs_client.create_service(
         cluster=cluster,
@@ -159,7 +160,7 @@ def create_ecs_service(cluster,
             },
         ],
         desiredCount=1,
-        launchType='EC2',
+        launchType=launch_type,
         deploymentConfiguration={
             'maximumPercent': 200,
             'minimumHealthyPercent': 50
@@ -172,3 +173,4 @@ def create_ecs_service(cluster,
         ],
         healthCheckGracePeriodSeconds=15
     )
+    return response
