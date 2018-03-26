@@ -4,6 +4,7 @@
 The python notebook Sample Code contains a running example of setting up a working example of serving an MNIST model with keras, tensorflowserving, and flask on AWS ECS.
 
 Code should:
+
     - Train keras model with MNIST.
     - Convert model to TF format (slightly flakey on Jupyter Notebook, might need to restart to reset tf session.)
     - Build docker image and push it to AWS ECR (Elastic Container Registry)
@@ -16,6 +17,7 @@ Heads Up:
     - Using a mix of boto3 and AWS CLI. Not really ideal but did not have time to rewrite to boto3.
 
 ## Requirements.
+
 - Install python requirements with pip3 install -r requirements.txt
 - Install Jupyter Notebook
 - Installed Docker (https://docs.docker.com/install/linux/docker-ce/ubuntu/)
